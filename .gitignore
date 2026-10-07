@@ -1,0 +1,21 @@
+# Entorno virtual y caché de Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Salidas pesadas del ETL (se regeneran con: python src/main.py)
+data/processed/*.db
+data/processed/airbnb_bogota_reviews.xlsx
+
+# Archivos temporales de Office
+~$*
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
