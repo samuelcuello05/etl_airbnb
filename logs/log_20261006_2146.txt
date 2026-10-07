@@ -1,0 +1,109 @@
+2026-10-06 21:46:50 | INFO     | etl | Archivo de log de esta ejecución: C:\Users\Admin\Documents\ITM\Inteligencia de Negocios\Taller 2 Proceso ETL\etl_airbnb\logs\log_20261006_2146.txt
+2026-10-06 21:46:50 | INFO     | etl.main | ########## INICIO DEL PROCESO ETL AIRBNB BOGOTÁ ##########
+2026-10-06 21:46:50 | INFO     | etl.extraccion | Conexión exitosa a MongoDB mongodb://localhost:27017/ (versión 8.3.8), base de datos 'airbnb_bogota_etl'
+2026-10-06 21:46:50 | INFO     | etl.extraccion | Colecciones disponibles: ['Calendar', 'Listings', 'Reviews']
+2026-10-06 21:46:50 | INFO     | etl.extraccion | === Inicio de la fase de EXTRACCIÓN ===
+2026-10-06 21:46:51 | INFO     | etl.extraccion | Colección 'Listings': 19,187 registros y 90 columnas extraídos (1.0s)
+2026-10-06 21:47:27 | INFO     | etl.extraccion | Colección 'Calendar': 7,003,255 registros y 5 columnas extraídos (35.6s)
+2026-10-06 21:47:31 | INFO     | etl.extraccion | Colección 'Reviews': 527,731 registros y 6 columnas extraídos (3.7s)
+2026-10-06 21:47:31 | INFO     | etl.extraccion | Extracción finalizada: 7,550,173 registros en total
+2026-10-06 21:47:31 | INFO     | etl.extraccion | Conexión a MongoDB cerrada
+2026-10-06 21:47:31 | INFO     | etl.main | Fase de extracción completada en 40.6s
+2026-10-06 21:47:31 | INFO     | etl.transformacion | === Inicio de la fase de TRANSFORMACIÓN ===
+2026-10-06 21:47:31 | INFO     | etl.transformacion | --- Transformando LISTINGS (19,187 filas, 90 columnas) ---
+2026-10-06 21:47:31 | INFO     | etl.transformacion | [listings] Eliminar duplicados | filas: 19,187 -> 19,187 | duplicados por ['id'] = 0
+2026-10-06 21:47:31 | INFO     | etl.transformacion | [listings] Columnas 100% nulas eliminadas (13): ['neighborhood_overview', 'host_since', 'host_response_time', 'host_response_rate', 'host_acceptance_rate', 'host_thumbnail_url', 'host_neighbourhood', 'host_total_listings_count', 'host_verifications', 'neighbourhood', 'neighbourhood_group_cleansed', 'calendar_updated', 'instant_bookable']
+2026-10-06 21:47:31 | INFO     | etl.transformacion | [listings] Columnas irrelevantes eliminadas (9): ['listing_url', 'picture_url', 'host_url', 'host_profile_url', 'host_picture_url', 'scrape_id', 'source', 'host_profile_id', 'calendar_last_scraped']
+2026-10-06 21:47:35 | WARNING  | etl.transformacion | [listings] Campos de la cotización sin ningún valor (se descartan): ['tarifa_limpieza', 'tarifa_servicio']
+2026-10-06 21:47:35 | INFO     | etl.transformacion | [listings] Desanidar price_quote_raw (JSON) | filas: 19,187 -> 19,187 | monedas={'COP': 19187}
+2026-10-06 21:47:35 | WARNING  | etl.transformacion | [listings] 195 alojamientos sin precio; se imputan con la mediana por localidad y tipo de habitación
+2026-10-06 21:47:35 | WARNING  | etl.transformacion | [listings] 667 precios atípicos (fuera de 36460 - 689680 COP) marcados; precio máximo encontrado 448176567 COP
+2026-10-06 21:47:35 | INFO     | etl.transformacion | [listings] Normalizar precio ($ y , -> número COP) | filas: 19,187 -> 19,187 | imputados=195, outliers=667, winsorizado P1=37,610 P99=1,318,301
+2026-10-06 21:47:35 | INFO     | etl.transformacion | [listings] Categorizar precio por rangos | filas: 19,187 -> 19,187 | {'Medio': 8680, 'Alto': 4946, 'Económico': 4062, 'Premium': 1192, 'Lujo': 307}
+2026-10-06 21:47:35 | INFO     | etl.transformacion | [listings] Booleanos t/f -> 1/0 | filas: 19,187 -> 19,187 | host_is_superhost, host_has_profile_pic, host_identity_verified, has_availability
+2026-10-06 21:47:35 | INFO     | etl.transformacion | [listings] Fechas -> YYYY-MM-DD | filas: 19,187 -> 19,187 | last_scraped, first_review, last_review, price_quote_*_date
+2026-10-06 21:47:35 | WARNING  | etl.transformacion | [listings] 'maximum_nights': 6 valores > 1125 acotados a 1125
+2026-10-06 21:47:35 | WARNING  | etl.transformacion | [listings] 'minimum_maximum_nights': 4 valores > 1125 acotados a 1125
+2026-10-06 21:47:35 | WARNING  | etl.transformacion | [listings] 'maximum_maximum_nights': 6 valores > 1125 acotados a 1125
+2026-10-06 21:47:35 | WARNING  | etl.transformacion | [listings] 'maximum_nights_avg_ntm': 6 valores > 1125 acotados a 1125
+2026-10-06 21:47:35 | INFO     | etl.transformacion | [listings] Tratar valores nulos | filas: 19,187 -> 19,187 | celdas nulas 98,970 -> 87,996 (review_scores sin reseñas se conservan nulos: 4,265 alojamientos)
+2026-10-06 21:47:35 | INFO     | etl.transformacion | [listings] Derivar baños desde bathrooms_text | filas: 19,187 -> 19,187 | bathrooms nulos 1066 -> 0
+2026-10-06 21:47:35 | INFO     | etl.transformacion | Texto 'host_location' canonizado: 2307 valores unificados
+2026-10-06 21:47:36 | INFO     | etl.transformacion | [listings] Estandarizar textos y localidades | filas: 19,187 -> 19,187 | 20 localidades oficiales
+2026-10-06 21:47:38 | INFO     | etl.transformacion | [listing_amenities] Desanidar amenities (JSON -> tabla larga) | filas: 19,187 -> 505,595 | 3,687 amenities distintas
+2026-10-06 21:47:38 | INFO     | etl.transformacion | [hosts] Desanidar información del host (dimensión) | filas: 19,187 -> 8,335 | 8,335 anfitriones únicos para 19,187 alojamientos
+2026-10-06 21:47:38 | INFO     | etl.transformacion | Listings final: 19,187 filas, 77 columnas
+2026-10-06 21:47:38 | INFO     | etl.transformacion | --- Transformando CALENDAR (7,003,255 filas) ---
+2026-10-06 21:47:38 | INFO     | etl.transformacion | [calendar] Eliminar duplicados | filas: 7,003,255 -> 7,003,255 | duplicados por ['listing_id', 'date'] = 0
+2026-10-06 21:47:38 | INFO     | etl.transformacion | [calendar] Integridad referencial con listings | filas: 7,003,255 -> 7,003,255
+2026-10-06 21:47:39 | WARNING  | etl.transformacion | [calendar] 'maximum_nights': 2,188 valores > 1125 acotados a 1125
+2026-10-06 21:47:39 | INFO     | etl.transformacion | [calendar] Fecha YYYY-MM-DD + año/mes/día/trimestre/semana | filas: 7,003,255 -> 7,003,255 | rango 2026-06-21 a 2027-06-21
+2026-10-06 21:47:40 | INFO     | etl.transformacion | [calendar_mensual] Agrupar calendario por alojamiento y mes | filas: 7,003,255 -> 249,431
+2026-10-06 21:47:40 | INFO     | etl.transformacion | [calendar_semanal] Agrupar calendario por semana (ciudad) | filas: 7,003,255 -> 54
+2026-10-06 21:47:40 | INFO     | etl.transformacion | --- Transformando REVIEWS (527,731 filas) ---
+2026-10-06 21:47:40 | INFO     | etl.transformacion | [reviews] Eliminar duplicados | filas: 527,731 -> 527,731 | duplicados por ['id'] = 0
+2026-10-06 21:47:40 | INFO     | etl.transformacion | [reviews] Integridad referencial con listings | filas: 527,731 -> 527,731
+2026-10-06 21:47:46 | WARNING  | etl.transformacion | [reviews] 191 comentarios nulos rellenados con 'Sin comentario'
+2026-10-06 21:47:46 | INFO     | etl.transformacion | [reviews] Limpiar comentarios (HTML, espacios, nulos) | filas: 527,731 -> 527,731 | nulos/vacíos=191, cortos=5281
+2026-10-06 21:47:47 | INFO     | etl.transformacion | [reviews] Fecha YYYY-MM-DD + año/mes/día/trimestre | filas: 527,731 -> 527,731 | rango 2010-10-06 a 2026-06-21
+2026-10-06 21:47:47 | INFO     | etl.transformacion | [reviews_mensual] Agrupar reseñas por mes | filas: 527,731 -> 182
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: listings                   19,187 filas x 77 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: hosts                      8,335 filas x 17 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: listing_amenities          505,595 filas x 2 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: amenities_resumen          3,687 filas x 3 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: calendar                   7,003,255 filas x 13 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: calendar_mensual           249,431 filas x 13 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: calendar_semanal           54 filas x 5 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: reviews                    527,731 filas x 16 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: reviews_mensual            182 filas x 6 columnas
+2026-10-06 21:47:47 | INFO     | etl.transformacion | Tabla lista para carga: auditoria_transformaciones 22 filas x 5 columnas
+2026-10-06 21:47:47 | INFO     | etl.main | Fase de transformación completada en 16.2s
+2026-10-06 21:47:47 | INFO     | etl.carga | === Inicio de la fase de CARGA ===
+2026-10-06 21:47:47 | INFO     | etl.carga | SQLite: tabla 'listings' cargada con 19,187 registros (0.3s)
+2026-10-06 21:47:47 | INFO     | etl.carga | SQLite: tabla 'hosts' cargada con 8,335 registros (0.0s)
+2026-10-06 21:47:48 | INFO     | etl.carga | SQLite: tabla 'listing_amenities' cargada con 505,595 registros (0.8s)
+2026-10-06 21:47:48 | INFO     | etl.carga | SQLite: tabla 'amenities_resumen' cargada con 3,687 registros (0.0s)
+2026-10-06 21:48:02 | INFO     | etl.carga | SQLite: tabla 'calendar' cargada con 7,003,255 registros (14.2s)
+2026-10-06 21:48:03 | INFO     | etl.carga | SQLite: tabla 'calendar_mensual' cargada con 249,431 registros (0.6s)
+2026-10-06 21:48:03 | INFO     | etl.carga | SQLite: tabla 'calendar_semanal' cargada con 54 registros (0.0s)
+2026-10-06 21:48:05 | INFO     | etl.carga | SQLite: tabla 'reviews' cargada con 527,731 registros (2.4s)
+2026-10-06 21:48:05 | INFO     | etl.carga | SQLite: tabla 'reviews_mensual' cargada con 182 registros (0.0s)
+2026-10-06 21:48:05 | INFO     | etl.carga | SQLite: tabla 'auditoria_transformaciones' cargada con 22 registros (0.0s)
+2026-10-06 21:48:18 | INFO     | etl.carga | SQLite: índices creados. Base de datos en C:\Users\Admin\Documents\ITM\Inteligencia de Negocios\Taller 2 Proceso ETL\etl_airbnb\data\processed\airbnb_bogota.db (944.4 MB)
+2026-10-06 21:48:25 | INFO     | etl.carga | XLSX: hoja 'listings' exportada con 19,187 filas (6.9s)
+2026-10-06 21:48:26 | INFO     | etl.carga | XLSX: hoja 'hosts' exportada con 8,335 filas (0.8s)
+2026-10-06 21:48:35 | INFO     | etl.carga | XLSX: hoja 'listing_amenities' exportada con 505,595 filas (9.3s)
+2026-10-06 21:48:35 | INFO     | etl.carga | XLSX: hoja 'amenities_resumen' exportada con 3,687 filas (0.1s)
+2026-10-06 21:48:35 | WARNING  | etl.carga | XLSX: 'calendar' tiene 7,003,255 filas y supera el límite de Excel (1,048,575); no se exporta a XLSX (queda completa en SQLite)
+2026-10-06 21:48:53 | INFO     | etl.carga | XLSX: hoja 'calendar_mensual' exportada con 249,431 filas (17.6s)
+2026-10-06 21:48:53 | INFO     | etl.carga | XLSX: hoja 'calendar_semanal' exportada con 54 filas (0.0s)
+2026-10-06 21:48:53 | INFO     | etl.carga | XLSX: hoja 'reviews_mensual' exportada con 182 filas (0.0s)
+2026-10-06 21:48:53 | INFO     | etl.carga | XLSX: hoja 'auditoria_transformaciones' exportada con 22 filas (0.0s)
+2026-10-06 21:48:56 | INFO     | etl.carga | XLSX: archivo generado airbnb_bogota_resumen.xlsx (28.5 MB)
+2026-10-06 21:49:45 | INFO     | etl.carga | XLSX: hoja 'reviews' exportada con 527,731 filas (48.7s)
+2026-10-06 21:49:52 | INFO     | etl.carga | XLSX: archivo generado airbnb_bogota_reviews.xlsx (87.2 MB)
+2026-10-06 21:49:52 | INFO     | etl.carga | --- Verificación de la carga ---
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  listings                   19,187 = 19,187
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  hosts                      8,335 = 8,335
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  listing_amenities          505,595 = 505,595
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  amenities_resumen          3,687 = 3,687
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  calendar                   7,003,255 = 7,003,255
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  calendar_mensual           249,431 = 249,431
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  calendar_semanal           54 = 54
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  reviews                    527,731 = 527,731
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  reviews_mensual            182 = 182
+2026-10-06 21:49:52 | INFO     | etl.carga | Verificación SQLite OK  auditoria_transformaciones 22 = 22
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación de tipos OK: price es REAL y todas las fechas son YYYY-MM-DD
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / listings             19,187 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / hosts                8,335 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / listing_amenities    505,595 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / amenities_resumen    3,687 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / calendar_mensual     249,431 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / calendar_semanal     54 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / reviews_mensual      182 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_resumen.xlsx / auditoria_transformaciones 22 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Verificación XLSX OK    airbnb_bogota_reviews.xlsx / reviews              527,731 filas
+2026-10-06 21:49:54 | INFO     | etl.carga | Carga verificada correctamente: todos los registros coinciden
+2026-10-06 21:49:54 | INFO     | etl.main | Fase de carga completada en 126.8s
+2026-10-06 21:49:54 | INFO     | etl.main | ########## FIN DEL PROCESO ETL (OK) en 183.6s ##########
+2026-10-06 21:49:54 | INFO     | etl.main | Log de la ejecución: C:\Users\Admin\Documents\ITM\Inteligencia de Negocios\Taller 2 Proceso ETL\etl_airbnb\logs\log_20261006_2146.txt
