@@ -1,0 +1,7 @@
+2026-10-06 21:52:52 | INFO     | etl | Archivo de log de esta ejecución: C:\Users\Admin\Documents\ITM\Inteligencia de Negocios\Taller 2 Proceso ETL\etl_airbnb\logs\log_20261006_2152.txt
+2026-10-06 21:52:52 | INFO     | etl.extraccion | Conexión exitosa a MongoDB mongodb://localhost:27017/ (versión 8.3.8), base de datos 'airbnb_bogota_etl'
+2026-10-06 21:52:52 | INFO     | etl.extraccion | Colecciones disponibles: ['Calendar', 'Listings', 'Reviews']
+2026-10-06 21:52:53 | INFO     | etl.extraccion | Colección 'Listings': 19,187 registros y 90 columnas extraídos (0.9s)
+2026-10-06 21:53:28 | INFO     | etl.extraccion | Colección 'Calendar': 7,003,255 registros y 5 columnas extraídos (35.1s)
+2026-10-06 21:53:31 | INFO     | etl.extraccion | Colección 'Reviews': 527,731 registros y 6 columnas extraídos (3.5s)
+2026-10-06 21:53:31 | INFO     | etl.extraccion | Conexión a MongoDB cerrada
